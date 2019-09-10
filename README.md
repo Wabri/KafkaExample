@@ -1,3 +1,8 @@
+<!--
+https://www.youtube.com/watch?v=U4y2R3v9tlY
+https://medium.com/@marcelo.hossomi/running-kafka-in-docker-machine-64d1501d6f0b
+-->
+
 # Kafka Usage Example
 
 Lo scopo di questa repository è quello di creare degli appunti usabili per comprendere, modificare e creare una coda kafka.
@@ -78,9 +83,9 @@ docker-compose up -d
 Il comando eseguirà il parse del file docker-compose.yml e eseguirà i due container.
 A questo punto sarà possibile utilizzare kafka localmente.
 
-## Kafka 
+## Kafka
 
-Kafka è uno strumento usato per la messaggistica real-time. 
+Kafka è uno strumento usato per la messaggistica real-time.
 Le sue caratteristiche sono varie: è tollerante nei fallimenti, è altamente scalabile e soprattutto può processare e inviare milioni di messaggi al secondo verso molti ricevitori.
 Può essere usato in diverse situazioni tra cui:
 * Servizi di messaggistica istantanea
@@ -92,14 +97,14 @@ Può essere usato in diverse situazioni tra cui:
 Il funzionamento di questo strumento si basa sulla comunicazione tra oggetti di 3 tipi:
 * **Producer**, è l'oggetto che produce il messaggio e lo invia a kafka
 * **Consumer**, colui che consuma il messaggio contenuto da kafka
-* **Broker**, è l'oggetto che esegue le mansioni intermedie 
+* **Broker**, è l'oggetto che esegue le mansioni intermedie
 
 ### Creazione del produttore
 
 
 
-    
-    
+
+
 
 
 
