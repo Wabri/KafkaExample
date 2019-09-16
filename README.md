@@ -85,6 +85,8 @@ A questo punto sarà possibile utilizzare kafka localmente.
 
 ## Kafka
 
+(*Ho scritto alcuni appunti su questo strumento ed è possibile trovarli qui: [kafka notes](https://wabri.github.io/post/apache_kafka/))
+
 Kafka è uno strumento usato per la messaggistica real-time.
 Le sue caratteristiche sono varie: è tollerante nei fallimenti, è altamente scalabile e soprattutto può processare e inviare milioni di messaggi al secondo verso molti ricevitori.
 Può essere usato in diverse situazioni tra cui:
