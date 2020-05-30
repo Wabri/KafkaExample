@@ -1,15 +1,18 @@
 <!--
 https://www.youtube.com/watch?v=U4y2R3v9tlY
-https://medium.com/@marcelo.hossomi/running-kafka-in-docker-machine-64d1501d6f0b
+http://cloudurable.com/blog/kafka-tutorial-kafka-from-command-line/index.html
 -->
 
 # Kafka Usage Example
 
 Lo scopo di questa repository è quello di creare degli appunti usabili per comprendere, modificare e creare una coda kafka.
 
+Userò anche docker per contenere kafka e zookeeper in modo da avere una white box degli strumenti necessari.
+
 ## Index
 
 * [Docker](#docker)
+	* docker-compose
 * [Kafka](#kafka)
 
 ## Docker
@@ -26,35 +29,35 @@ Per poter usare questo strumento è necessario compilare un file in linguaggio Y
 Il docker compose creato per questo progetto è il seguente:
 
 ```YAML
-version: '3'
+version: '2'
 services:
 
   zookeeper:
-    image: zookeeper
-    hostname: zoohost
+    image: confluentinc/cp-zookeeper:latest
     ports:
       - "2181:2181"
     environment:
-      ZOO_MY_ID: 1
-      ZOO_PORT: 2181
-      ZOO_SERVERS: server=zoohost:2888:3888
+        ZOOKEEPER_CLIENT_PORT: 2181
+        ZOOKEEPER_TICK_TIME: 2000
     volumes:
-      - ./zk-kafka/zookeeper/data:/var/lib/zookeeper/data
+      - ./zk-data/zookeeper/data:/var/lib/zookeeper/data
 
   kafka:
-    image: wurstmeister/kafka
-    hostname: kafkahost
+    image: confluentinc/cp-kafka:latest
     ports:
-      - "9092:9092"
+      - 9092:9092
     environment:
       KAFKA_ADVERTISED_HOST_NAME: 192.168.1.84
-      KAFKA_ZOOKEEPER_CONNECT: zoohost:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_BROKER_ID: 1
-      KAFKA_CREATE_TOPICS: "test-topic"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
     volumes:
-      - ./zk-kafka/kafka/data:/var/lib/kafka/data
+      - ./zk-data/kafka/data:/var/lib/kafka/data
     depends_on:
       - zookeeper
+
 ```
 
 Andiamo ad analizzare più a fondo le configurazioni definite:
@@ -63,7 +66,6 @@ Andiamo ad analizzare più a fondo le configurazioni definite:
 * **services**: all'interno di questo campo saranno presenti tutti i servizi/container che la build dovrà usare
     * ***zookeeper***: definizione del container chiamato zookeeper
         * `image: zookeeper` indica l'immagine docker che il container dovrà contenere
-        * `hostname: zoohost` è l'alias che viene dato all'host del container per poter fare dei reference
         * `ports: ...` è la lista di tutte le porte che verranno lasciate aperte per poter accedere ai servizi del container
         * `environment: ...` sono le variabili d'ambiente definite per il contenitore
         * `volumes: ...` ogni elemento di questa lista rappresenta il volume nella memoria locale a cui dovrà fare riferimento un dato volume interno al container, nel caso sopra avremo che la directory `/var/lib/zookeeper/data` sarà logicamente riferita alla directory `./zk-kafka/kafka/data`
@@ -100,6 +102,13 @@ Il funzionamento di questo strumento si basa sulla comunicazione tra oggetti di 
 * **Producer**, è l'oggetto che produce il messaggio e lo invia a kafka
 * **Consumer**, colui che consuma il messaggio contenuto da kafka
 * **Broker**, è l'oggetto che esegue le mansioni intermedie
+
+## Zookeeper
+
+ZooKeeper è un servizio di coordinamento ad alte prestazioni per applicazioni
+distribuite. Viene utilizzato per implementare protocolli di consenso, gestione
+ed elezioni di leader e presenza. In questo caso viene sfruttato come backend
+per gestire le code presenti all'interno di kafka.
 
 ### Creazione del produttore
 
